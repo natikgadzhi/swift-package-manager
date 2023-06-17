@@ -267,7 +267,7 @@ let package = Package(
             ],
             exclude: ["CMakeLists.txt"]
         ),
-        
+
         .target(
             name: "PackageSigning",
             dependencies: [
@@ -739,3 +739,10 @@ if ProcessInfo.processInfo.environment["SWIFTCI_USE_LOCAL_DEPS"] == nil {
         .package(path: "../swift-certificates"),
     ]
 }
+
+package.dependencies.append(
+    .package(
+        url: "https://github.com/apple/swift-docc-plugin",
+        from: "1.0.0"
+    )
+)

@@ -1,0 +1,53 @@
+name: Build Swift DocC and publish on GitHub Pages
+
+on:
+  push:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Set up Swift environment
+      uses: fwal/setup-swift@v1
+      with:
+        swift-version: '5.8'
+
+    - name: Build docs with SwiftPM
+      run: |
+        swift package --allow-writing-to-directory ./docs \
+        generate-documentation --target ${TARGET} \
+        --output-path ./docs \
+        --transform-for-static-hosting \
+        --hosting-base-path ${TARGET}
+
+    - name: Upload built website as an artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: github-pages
+        path: ./docs
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Deploy to GitHub Pages
+      uses: actions/deploy-pages
+      with:
+        branch: gh-pages  # The branch the action should deploy to.
+        folder: docs  # The folder the action should deploy.
