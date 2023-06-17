@@ -14,6 +14,9 @@ concurrency:
   group: "pages"
   cancel-in-progress: false
 
+env:
+  BUILD_TARGET: "PackageDescription"
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -30,10 +33,10 @@ jobs:
     - name: Build docs with SwiftPM
       run: |
         swift package --allow-writing-to-directory ./docs \
-        generate-documentation --target ${TARGET} \
+        generate-documentation --target ${BUILD_TARGET} \
         --output-path ./docs \
         --transform-for-static-hosting \
-        --hosting-base-path ${TARGET}
+        --hosting-base-path ${BUILD_TARGET}
 
     - name: Upload built website as an artifact
       uses: actions/upload-artifact@v3
