@@ -45,7 +45,7 @@ jobs:
       run: |
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
-        git switch gh-pages
+        git checkout --track origin/gh-pages
         git commit -a -m "Generated Swift DocC"
         git push origin gh-pages
 
