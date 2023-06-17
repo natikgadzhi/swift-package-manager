@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  BUILD_TARGET: "PackageDescription"
+  BUILD_TARGET: PackageDescription
 
 jobs:
   build:
