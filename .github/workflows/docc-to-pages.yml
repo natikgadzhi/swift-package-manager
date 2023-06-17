@@ -3,11 +3,6 @@ name: Build Swift DocC and publish on GitHub Pages
 on:
   push:
 
-permissions:
-  contents: write
-  pages: write
-  id-token: write
-
 # Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
 # However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
@@ -42,8 +37,7 @@ jobs:
         --transform-for-static-hosting \
         --hosting-base-path swift-package-manager
 
-
-    - name: Commit generated documentation
+    - name: Commit and push generated documentation
       run: |
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
@@ -51,9 +45,3 @@ jobs:
         git add ./docs
         git commit -a -m "Generated Swift DocC"
         git push origin gh-pages
-
-    - name: Push changes
-      uses: ad-m/github-push-action@master
-      with:
-        # github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: gh-pages
