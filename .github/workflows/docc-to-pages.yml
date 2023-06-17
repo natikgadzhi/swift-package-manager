@@ -4,7 +4,7 @@ on:
   push:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -30,27 +30,25 @@ jobs:
       with:
         swift-version: '5.8'
 
+    # Build the DocC website using swiftPM.
     - name: Build docs with SwiftPM
       run: |
         swift package --allow-writing-to-directory ./docs \
         generate-documentation --target ${BUILD_TARGET} \
         --output-path ./docs \
+        --disable-indexing \
         --transform-for-static-hosting \
-        --hosting-base-path ${BUILD_TARGET}
+        --hosting-base-path swift-package-manager
 
-    - name: Upload built website as an artifact
-      uses: actions/upload-artifact@v3
+    - name: Commit generated documentation
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git switch gh-pages
+        git commit -a -m "Generated Swift DocC"
+
+    - name: Push changes
+      uses: ad-m/github-push-action@master
       with:
-        name: github-pages
-        path: ./docs
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Deploy to GitHub Pages
-      uses: actions/deploy-pages@v2
-      with:
-        branch: gh-pages  # The branch the action should deploy to.
-        folder: docs  # The folder the action should deploy.
+        # github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: gh-pages
