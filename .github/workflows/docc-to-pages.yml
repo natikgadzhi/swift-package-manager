@@ -24,6 +24,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
 
     - name: Set up Swift environment
       uses: fwal/setup-swift@v1
@@ -45,7 +47,7 @@ jobs:
       run: |
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
-        git checkout --track origin/gh-pages
+        git switch gh-pages
         git commit -a -m "Generated Swift DocC"
         git push origin gh-pages
 
